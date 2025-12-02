@@ -17,7 +17,17 @@ class HotelFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'Hotel '.fake()->company(),
+            'address' => fake()->streetAddress(),
+            'address2' => null,
+            'zipcode' => fake()->postcode(),
+            'city' => fake()->city(),
+            'country' => fake()->country(),
+            'longitude' => fake()->longitude(),
+            'latitude' => fake()->latitude(),
+            'description' => fake()->paragraph(),
+            'max_capacity' => rand(2, 20),
+            'price_per_night' => rand(20, 200),
         ];
     }
 }
