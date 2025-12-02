@@ -26,7 +26,7 @@ class HotelFactory extends Factory
             'longitude' => fake()->longitude(),
             'latitude' => fake()->latitude(),
             'description' => fake()->paragraph(),
-            'max_capacity' => rand(2, 20),
+            'max_capacity' => rand(2, 200),
             'price_per_night' => rand(20, 200),
         ];
     }
