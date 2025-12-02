@@ -45,6 +45,7 @@ class HotelController extends Controller
      */
     public function destroy(Hotel $hotel)
     {
-        //
+        $hotel->delete();
+        return response()->json(null, 204);
     }
 }
