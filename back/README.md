@@ -2,21 +2,29 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-  - [Directory Structure](#directory-structure)
-  - [Development Environment](#development-environment)
-  - [Production Environment](#production-environment)
-- [Getting Started](#getting-started)
-  - [Clone the Repository](#clone-the-repository)
-  - [Setting Up the Development Environment](#setting-up-the-development-environment)
-- [Usage](#usage)
-- [Production Environment](#production-environment-1)
-  - [Building and Running the Production Environment](#building-and-running-the-production-environment)
-- [Technical Details](#technical-details)
-- [Contributing](#contributing)
-  - [How to Contribute](#how-to-contribute)
-- [License](#license)
+- [Laravel Docker Examples Project](#laravel-docker-examples-project)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Project Structure](#project-structure)
+    - [Directory Structure](#directory-structure)
+    - [Production Environment](#production-environment)
+    - [Development Environment](#development-environment)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Clone the Repository](#clone-the-repository)
+    - [Setting Up the Development Environment](#setting-up-the-development-environment)
+  - [Usage](#usage)
+    - [Accessing the Workspace Container](#accessing-the-workspace-container)
+    - [Run Artisan Commands:](#run-artisan-commands)
+    - [Rebuild Containers:](#rebuild-containers)
+    - [Stop Containers:](#stop-containers)
+    - [View Logs:](#view-logs)
+  - [Production Environment](#production-environment-1)
+    - [Deploying](#deploying)
+  - [Technical Details](#technical-details)
+  - [Contributing](#contributing)
+    - [How to Contribute](#how-to-contribute)
+  - [License](#license)
 
 
 ## Overview
@@ -105,7 +113,7 @@ cd laravel-docker-examples
 cp .env.example .env
 ```
 
-Hint: adjust the `UID` and `GID` variables in the `.env` file to match your user ID and group ID. You can find these by running `id -u` and `id -g` in the terminal.
+_Hint: adjust the `UID` and `GID` variables in the `.env` file to match your user ID and group ID. You can find these by running `id -u` and `id -g` in the terminal._
 
 2. Start the Docker Compose Services:
 
@@ -119,16 +127,25 @@ docker compose -f compose.dev.yaml up -d
 docker compose -f compose.dev.yaml exec workspace bash
 composer install
 npm install
-npm run dev
 ```
 
-4. Run Migrations:
+4. Run PHP Artisan commands:
 
 ```bash
-docker compose -f compose.dev.yaml exec workspace php artisan migrate
+php artisan key:generate
+php artisan migrate
 ```
 
-5. Access the Application:
+5. Restart Docker containers
+
+Because the .env file changed (and now contains the app key), the server needs a restart.
+
+```bash
+docker compose -f compose.dev.yaml down
+docker compose -f compose.dev.yaml up -d
+```
+
+6. Access the Application:
 
 Open your browser and navigate to [http://localhost](http://localhost).
 
