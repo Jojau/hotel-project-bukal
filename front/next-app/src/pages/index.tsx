@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -25,11 +26,14 @@ export default function Home() {
           Hotels list
         </h1>
 
-        <ul>
-          {hotels.map((hotel) => <li>
-            {hotel.name}
-          </li>)}
-        </ul>
+        <div>
+          {hotels.map((hotel) => <div>
+            <h2>{hotel.name}</h2>
+            <p>{hotel.description}</p>
+            <p><strong>Max capapcity: </strong>{hotel.max_capacity}</p>
+            <Link href={`/hotel/${hotel.id}`}>See more details</Link>
+          </div>)}
+        </div>
       </main>
 
     </div>
