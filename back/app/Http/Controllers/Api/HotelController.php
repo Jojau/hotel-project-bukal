@@ -38,9 +38,11 @@ class HotelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Hotel $hotel)
+    public function update(HotelRequest $request, Hotel $hotel)
     {
-        //
+        $data = $request->validated();
+        $hotel->update($data);
+        return response()->json($hotel, 200);
     }
 
     /**
