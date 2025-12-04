@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Hotel extends Model
@@ -24,4 +25,9 @@ class Hotel extends Model
         'max_capacity',
         'price_per_night',
     ];
+
+    public function pictures(): HasMany
+    {
+        return $this->hasMany(Picture::class);
+    }
 }
