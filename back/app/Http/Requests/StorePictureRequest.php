@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class StorePictureRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StorePictureRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,23 @@ class StorePictureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'picture' => 'required|image|max:5096', // Max 5MB
+            'hotel_id' => 'required|exists:hotels,id',
+            'index' => 'required|integer|min:0',
         ];
+    }
+
+    /**
+     * Handle a failed validation attempt.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(
+            response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422)
+        );
     }
 }

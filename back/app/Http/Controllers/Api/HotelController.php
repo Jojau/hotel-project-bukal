@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HotelRequest;
 use App\Models\Hotel;
-use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
@@ -14,7 +13,7 @@ class HotelController extends Controller
      */
     public function index()
     {
-        return Hotel::all();
+        return Hotel::with('pictures')->get();
     }
 
     /**
@@ -32,7 +31,7 @@ class HotelController extends Controller
      */
     public function show(Hotel $hotel)
     {
-        return $hotel;
+        return $hotel->load('pictures');
     }
 
     /**
