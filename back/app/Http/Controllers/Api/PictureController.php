@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePictureRequest;
+use App\Http\Requests\UpdatePictureRequest;
 use App\Models\Picture;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PictureController extends Controller
 {
@@ -50,9 +52,11 @@ class PictureController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Picture $picture)
+    public function update(UpdatePictureRequest $request, Picture $picture)
     {
-        //
+        $data = $request->validated();
+        $picture->update($data);
+        return response()->json($picture, 200);
     }
 
     /**
@@ -60,6 +64,10 @@ class PictureController extends Controller
      */
     public function destroy(Picture $picture)
     {
-        //
+        $relative = str_replace(asset('storage/'), '', $picture->file_path);
+        $relative = ltrim($relative, '/');
+        Storage::disk('public')->delete($relative);
+        $picture->delete();
+        return response()->json(null, 204);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HotelRequest;
 use App\Models\Hotel;
+use Illuminate\Support\Facades\Storage;
 
 class HotelController extends Controller
 {
@@ -49,6 +50,7 @@ class HotelController extends Controller
      */
     public function destroy(Hotel $hotel)
     {
+        Storage::disk('public')->deleteDirectory('pictures/'.$hotel->id);
         $hotel->delete();
         return response()->json(null, 204);
     }
