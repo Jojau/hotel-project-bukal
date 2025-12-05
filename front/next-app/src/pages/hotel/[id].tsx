@@ -2,7 +2,21 @@ import { useRouter } from 'next/router'
 
 export default function Page({ hotel }) {
   const router = useRouter()
-  console.log(hotel);
+  
+  const deleteFunction = async () => {
+    if (confirm("Are you sure you want to delete this hotel?")) {
+      const response = await fetch(`http://localhost/api/hotel/${hotel.id}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        router.push('/');
+      } else {
+        alert("Sorry, an error occurred and the hotel could not be deleted.");
+        console.log(response);
+      }
+    }
+  }
+
   return (
     <div>
       <h1>{hotel.name}</h1>
@@ -27,6 +41,12 @@ export default function Page({ hotel }) {
 
       <p><strong>Maximum capacity: </strong>{hotel.max_capacity}</p>
       <p><strong>Price per night: </strong>{hotel.price_per_night}</p>
+
+      <aside>
+        <h2>Admin actions</h2>
+        <button onClick={() => router.push(`/hotel/edit/${hotel.id}`)}>Edit hotel</button>
+        <button onClick={ deleteFunction }>Delete hotel</button>
+      </aside>
     </div>
   )
 }
