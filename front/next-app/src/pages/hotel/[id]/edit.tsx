@@ -177,7 +177,7 @@ export default function Page({ hotel }) {
         <input type="number" name="longitude" defaultValue={hotel.longitude} step="0.00000000000001" required />
 
         <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" required>{hotel.description}</textarea>
+        <textarea name="description" id="description" defaultValue={hotel.description} required></textarea>
 
         <label htmlFor="max_capacity">Maximum capacity</label>
         <input type="number" name="max_capacity" defaultValue={hotel.max_capacity} required />
