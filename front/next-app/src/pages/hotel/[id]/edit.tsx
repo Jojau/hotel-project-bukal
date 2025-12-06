@@ -212,17 +212,17 @@ export async function getStaticProps({ params }) {
 
   return {
     props: {
-      hotel
+      hotel: hotel.data
     }
   }
 }
 
 export async function getStaticPaths() {
-  const data = await fetch("http://localhost/api/hotel").then((response) => response.json())
+  const data = await fetch("http://localhost/api/hotel-ids").then((response) => response.json())
 
   return {
-    paths: data.map(hotel => ({
-      params: { id: hotel.id.toString() }
+    paths: data.map(id => ({
+      params: { id: id.toString() }
     })),
     fallback: false
   }
