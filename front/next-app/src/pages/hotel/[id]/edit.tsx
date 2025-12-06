@@ -128,7 +128,8 @@ export default function Page({ hotel }) {
         method: 'DELETE'
       });
       if (response.ok) {
-        // Remove picture from UI ??
+        // Reload the page to reflect the changes
+        router.reload();
       } else {
         alert("Sorry, an error occurred and the image could not be deleted.");
         console.log(response);
