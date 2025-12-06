@@ -1,8 +1,13 @@
-import { Box, Button, ButtonGroup, Container, Flex, FormatNumber, Group, Heading, HStack, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Container, FormatNumber, Group, Heading, Stack, Text, Carousel, IconButton, Image } from '@chakra-ui/react';
+import { LuChevronLeft, LuChevronRight } from "react-icons/lu"
 import { useRouter } from 'next/router'
 
 export default function Page({ hotel }) {
   const router = useRouter()
+
+  const pictures = hotel.pictures ? hotel.pictures.sort(function (a, b) {
+    return a.index - b.index;
+  }) : [];
 
   const deleteFunction = async () => {
     if (confirm("Are you sure you want to delete this hotel?")) {
@@ -23,14 +28,59 @@ export default function Page({ hotel }) {
       <Heading size={'4xl'} textAlign={'center'}>{hotel.name}</Heading>
 
       {/* Hotel pictures carousel */}
-      {hotel.pictures && hotel.pictures.length > 0 && (
-        <div>
-          {hotel.pictures.sort(function (a, b) {
-            return a.index - b.index;
-          }).map((picture, index) => (
-            <img key={index} style={{ maxHeight: '500px', maxWidth: '500px' }} src={picture.file_path}></img>
-          ))}
-        </div>
+      {pictures && pictures.length > 0 && (
+        <Carousel.Root slideCount={pictures.length} allowMouseDrag={true} autoplay={true} loop={true}  >
+          <Carousel.Control justifyContent="center" gap="4" width="full">
+            <Carousel.PrevTrigger asChild>
+              <IconButton size="xs" variant="outline">
+                <LuChevronLeft />
+              </IconButton>
+            </Carousel.PrevTrigger>
+
+            <Carousel.ItemGroup width="full">
+              {pictures.map((item, index) => (
+                <Carousel.Item key={index} index={index}>
+                  <Image
+                    aspectRatio="16/9"
+                    src={item.file_path}
+                    alt={'Picture '+index+' of hotel '+hotel.name}
+                    w="100%"
+                    h="100%"
+                    objectFit="contain"
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel.ItemGroup>
+
+            <Carousel.NextTrigger asChild>
+              <IconButton size="xs" variant="outline">
+                <LuChevronRight />
+              </IconButton>
+            </Carousel.NextTrigger>
+          </Carousel.Control>
+
+          <Carousel.IndicatorGroup>
+            {pictures.map((item, index) => (
+              <Carousel.Indicator
+                key={index}
+                index={index}
+                unstyled
+                _current={{
+                  outline: "2px solid currentColor",
+                  outlineOffset: "2px",
+                }}
+              >
+                <Image
+                  w="20"
+                  aspectRatio="16/9"
+                  src={item.file_path}
+                  alt={'Picture '+index+' of hotel '+hotel.name}
+                  objectFit="cover"
+                />
+              </Carousel.Indicator>
+            ))}
+          </Carousel.IndicatorGroup>
+        </Carousel.Root>
       )}
 
       {/* Content */}
