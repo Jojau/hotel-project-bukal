@@ -45,7 +45,7 @@ export default function Page({ hotel }) {
 
   const handleHotelFormSubmit = async (event) => {
     event.preventDefault();
-    
+
     // Get all form data
     const form = event.target;
     const formData = new FormData(form);
@@ -56,8 +56,8 @@ export default function Page({ hotel }) {
     try {
       setErrors([]);
 
-      // Create hotel 
-      const updateHotelResponse = await fetch('http://localhost/api/hotel/'+hotel.id, {
+      // Update hotel 
+      const updateHotelResponse = await fetch('http://localhost/api/hotel/' + hotel.id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
@@ -67,13 +67,13 @@ export default function Page({ hotel }) {
       const HotelValidationErrors = await handleResponseErrors(updateHotelResponse);
       if (HotelValidationErrors.length > 0) return;
 
-      // If hotel has been successfully created
-      const createdHotel = await updateHotelResponse.json();
+      // If hotel has been successfully updated
+      const updatedHotel = await updateHotelResponse.json();
       setErrors([]);
-      // Redirect to the created hotel's details page
-      router.push(`/hotel/${createdHotel.id}`);
+      // Redirect to the hotel's details page
+      router.push(`/hotel/${updatedHotel.id}`);
 
-      } catch (err) {
+    } catch (err) {
       // Handle other errors
       console.error('Submit error', err);
       setErrors(prev => prev.length ? prev : ['An unexpected error occurred.']);
@@ -82,8 +82,41 @@ export default function Page({ hotel }) {
 
   const handlePicturesFormSubmit = async (event) => {
     event.preventDefault();
-    
-    // TODO
+
+    // Get all form data
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Validation rules could be added here before submission...
+
+    // Update each picture's index
+    let hasErrors = false
+    for (const key in data) {
+      // As the key follows the format picture_index_{id}, we extract the id by getting the last element after splitting by '_'
+      const pictureId = key.split('_').pop();
+
+      try {
+        const updatePictureResponse = await fetch(`http://localhost/api/picture/${pictureId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index: data[key] }),
+        });
+
+        // Handle picture validation errors
+        const pictureValidationErrors = await handleResponseErrors(updatePictureResponse);
+        if (pictureValidationErrors.length > 0) hasErrors = true;
+
+      } catch (error) {
+        // Handle other errors
+        console.error('Submit error', error);
+        setErrors(prev => prev.length ? prev : ['An unexpected error occurred.']);
+      }
+    }
+    if (!hasErrors) {
+      // If all pictures have been successfully updated, redirect to details page
+      router.push(`/hotel/${hotel.id}`);
+    }
   }
 
   const deletePicture = async (event) => {
