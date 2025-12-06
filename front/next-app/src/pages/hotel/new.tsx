@@ -130,37 +130,37 @@ export default function Page() {
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <label htmlFor="name">Hotel name</label>
-        <input type="text" name="name" value="The Cloud One Hotel New York-Downtown" required />
+        <input type="text" name="name" placeholder="The Cloud One Hotel New York-Downtown" required />
 
         <label htmlFor="address">Address (number, street)</label>
-        <input type="text" name="address" value="133 Greenwich St" required />
+        <input type="text" name="address" placeholder="133 Greenwich St" required />
 
         <label htmlFor="address2">Complementary address (optional)</label>
-        <input type="text" name="address2" value="" />
+        <input type="text" name="address2" placeholder="" />
 
         <label htmlFor="zipcode">Zipcode</label>
-        <input type="text" name="zipcode" value="NY 10006" required />
+        <input type="text" name="zipcode" placeholder="NY 10006" required />
 
         <label htmlFor="city">City</label>
-        <input type="text" name="city" value="New York" required />
+        <input type="text" name="city" placeholder="New York" required />
 
         <label htmlFor="country">Country</label>
-        <input type="text" name="country" value="United States of America" required />
+        <input type="text" name="country" placeholder="United States of America" required />
 
         <label htmlFor="latitude">Latitude</label>
-        <input type="number" name="latitude" value="40.70967754745341" step="0.00000000000001" required />
+        <input type="number" name="latitude" placeholder="40.70967754745341" step="0.00000000000001" required />
 
         <label htmlFor="longitude">Longitude</label>
-        <input type="number" name="longitude" value="-74.01277611534421" step="0.00000000000001" required />
+        <input type="number" name="longitude" placeholder="-74.01277611534421" step="0.00000000000001" required />
 
         <label htmlFor="description">Description</label>
         <textarea name="description" id="description" required></textarea>
 
         <label htmlFor="max_capacity">Maximum capacity</label>
-        <input type="number" name="max_capacity" value="200" required />
+        <input type="number" name="max_capacity" placeholder="200" required />
 
         <label htmlFor="price_per_night">Price per night (in USD)</label>
-        <input type="number" name="price_per_night" value="250" required />
+        <input type="number" name="price_per_night" placeholder="250" required />
 
         <label htmlFor="pictures">Upload pictures (multiple images can be added at once)</label>
         <input type="file" name="pictures" id="pictures" multiple accept="image/*" />
