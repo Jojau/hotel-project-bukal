@@ -1,9 +1,9 @@
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hotel } from "../types/types"
+import { Button, Card, Flex, Heading, Text, Image } from "@chakra-ui/react";
 
 export default function Home() {
 
@@ -24,7 +24,7 @@ export default function Home() {
         label: string,
         active: boolean,
       }>,
-      path : string,
+      path: string,
       per_page: number,
       to: number,
       total: number,
@@ -42,7 +42,7 @@ export default function Home() {
       from: 0,
       last_page: 0,
       links: [],
-      path : 'http://localhost/api/hotel',
+      path: 'http://localhost/api/hotel',
       per_page: 0,
       to: 0,
       total: 0
@@ -50,7 +50,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const data = fetch("http://localhost/api/hotel")
+    const data = fetch("http://localhost/api/hotel?page=3")
       .then((response) => response.json())
       .then(setHotels);
   }, []);
@@ -63,18 +63,34 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Hotels list
-        </h1>
+        <Heading size={'6xl'} as={'h1'}>Hotels</Heading>
 
-        <div>
-          {hotels.data.map((hotel) => <div>
-            <h2>{hotel.name}</h2>
-            <p>{hotel.description}</p>
-            <p><strong>Max capapcity: </strong>{hotel.max_capacity}</p>
-            <Link href={`/hotel/${hotel.id}`}>See more details</Link>
-          </div>)}
-        </div>
+        <Flex gap={'24px'} justifyContent={'center'} flexWrap={'wrap'} margin={'48px'}>
+          {hotels.data.map((hotel) => 
+            <Card.Root maxW="sm" overflow="hidden" key={hotel.id}>
+              {hotel.pictures && hotel.pictures.length > 0 && (
+                <Image
+                  src={hotel.pictures[0].file_path}
+                  alt={hotel.name}
+                  height={'250px'}
+                />
+              )}
+              <Card.Body gap="2">
+                <Card.Title>{hotel.name}</Card.Title>
+                <Card.Description>
+                  <Text lineClamp={2}>{hotel.description}</Text>
+                </Card.Description>
+                <Text textStyle="md" fontWeight="medium" letterSpacing="tight" mt="2">
+                  ${hotel.price_per_night} per night
+                </Text>
+              </Card.Body>
+              <Card.Footer gap="2">
+                <Link href={`/hotel/${hotel.id}`}><Button variant="solid">See details</Button></Link>
+                <Link href={`/hotel/${hotel.id}/edit`}><Button variant="ghost">Edit</Button></Link>
+              </Card.Footer>
+            </Card.Root>
+          )}
+        </Flex>
       </main>
 
     </div>

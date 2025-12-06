@@ -13,7 +13,7 @@ export interface Hotel {
     price_per_night: number;
     pictures?: Array<{
       id: string;
-      url: string;
+      file_path: string;
       index: number;
     }>;
 }
