@@ -44,7 +44,7 @@ export default function Page({ hotel }) {
 
       <aside>
         <h2>Admin actions</h2>
-        <button onClick={() => router.push(`/hotel/edit/${hotel.id}`)}>Edit hotel</button>
+        <button onClick={() => router.push(`/hotel/${hotel.id}/edit`)}>Edit hotel</button>
         <button onClick={ deleteFunction }>Delete hotel</button>
       </aside>
     </div>
