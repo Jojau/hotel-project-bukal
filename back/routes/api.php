@@ -10,4 +10,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::apiResource('hotel', HotelController::class);
+Route::get('hotel-ids', [HotelController::class, 'getAllIds']);
 Route::apiResource('picture', PictureController::class);

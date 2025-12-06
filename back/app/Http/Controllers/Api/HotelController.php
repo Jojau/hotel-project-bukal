@@ -20,6 +20,14 @@ class HotelController extends Controller
     }
 
     /**
+     * Get all hotels IDs.
+     */
+    public function getAllIds()
+    {
+        return response()->json(Hotel::pluck('id')->toArray());
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(HotelRequest $request)
