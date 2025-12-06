@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\HotelRequest;
+use App\Http\Resources\HotelCollection;
+use App\Http\Resources\HotelResource;
 use App\Models\Hotel;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,7 +16,7 @@ class HotelController extends Controller
      */
     public function index()
     {
-        return Hotel::with('pictures')->get();
+        return new HotelCollection(Hotel::with('pictures')->paginate(10));
     }
 
     /**
@@ -32,7 +34,7 @@ class HotelController extends Controller
      */
     public function show(Hotel $hotel)
     {
-        return $hotel->load('pictures');
+        return new HotelResource($hotel->load('pictures'));
     }
 
     /**
