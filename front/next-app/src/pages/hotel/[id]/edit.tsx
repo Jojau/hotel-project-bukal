@@ -81,6 +81,61 @@ export default function Page({ hotel }) {
     }
   }
 
+  const handlePicturesUpload = async (event) => {
+    event.preventDefault();
+
+    // Get all form data
+    const form = event.target;
+    const formData = new FormData(form);
+    const allPictures = formData.getAll('pictures');
+    // Filter out empty files (FileUpload creates empty files when no selection is made)
+    const pictures = allPictures.filter((file: File) => file.size > 0);
+
+    setErrors([]);
+    let hasErrors = false;
+    let uploadedPictureIds = [];
+    for (let index = 0; index < pictures.length; index++) {
+      const element = pictures[index];
+
+      const pictureFormData = new FormData();
+      pictureFormData.append('picture', element);
+      pictureFormData.append('index', index.toString());
+      pictureFormData.append('hotel_id', hotel.id);
+
+      try {
+        // Create picture 
+        const uploadPictureResponse = await fetch('http://localhost/api/picture', {
+          method: 'POST',
+          body: pictureFormData
+        });
+
+        // Handle picture validation errors
+        const pictureValidationErrors = await handleResponseErrors(uploadPictureResponse);
+        if (pictureValidationErrors.length > 0) {
+          hasErrors = true;
+        } else {
+          const uploadedPicture = await uploadPictureResponse.json();
+          uploadedPictureIds.push(uploadedPicture.id);
+        }
+      } catch (error) {
+        // Handle other errors
+        console.error('Submit error', error);
+        setErrors(prev => prev.length ? prev : ['An unexpected error occurred.']);
+      }
+    }
+    if (hasErrors) {
+      // Delete any pictures that were successfully uploaded before the errors occurred
+      for (const pictureId of uploadedPictureIds) {
+        await fetch(`http://localhost/api/picture/${pictureId}`, {
+          method: 'DELETE'
+        });
+      }
+    } else {
+      // If all pictures have been successfully uploaded, redirect to details page
+      router.push(`/hotel/${hotel.id}`);
+    }
+  }
+
   const handlePicturesFormSubmit = async (event) => {
     event.preventDefault();
 
@@ -173,7 +228,7 @@ export default function Page({ hotel }) {
             <Alert.Root status="error">
               <Alert.Indicator />
               <Alert.Content>
-                <Alert.Title fontWeight={'bold'}>Hotel update {errors.length > 1 ? 'errors' : 'error'}</Alert.Title>
+                <Alert.Title fontWeight={'bold'}>Update {errors.length > 1 ? 'errors' : 'error'}</Alert.Title>
                 <Alert.Description>
                   <List.Root>
                     {errors.map((message, index) => (
@@ -302,7 +357,33 @@ export default function Page({ hotel }) {
             </Box>
           </Stack>
 
-          {/* TODO Add new pictures */}
+          {/* Add new pictures */}
+          <Stack gapY={'12px'}>
+            <Heading size={'lg'} >Add new pictures</Heading>
+            <Box borderWidth={'1px'} padding={'24px'}>
+              <form onSubmit={handlePicturesUpload}>
+                <Stack gapY={'24px'}>
+                  <Field.Root>
+                    <Field.Label>
+                      Upload pictures
+                    </Field.Label>
+                    <FileUpload.Root maxFiles={10} accept="image/*" name="pictures">
+                      <FileUpload.HiddenInput />
+                      <FileUpload.Trigger asChild>
+                        <Button variant="outline" size="sm">
+                          <LuFileImage /> Upload pictures
+                        </Button>
+                      </FileUpload.Trigger>
+                      <FileUpload.List showSize clearable />
+                    </FileUpload.Root>
+                    <Field.HelperText>Maximum size : 2MB. You can upload up to 10 pictures at once. Each picture will be added to the slideshow in the order they are selected.</Field.HelperText>
+                  </Field.Root>
+
+                  <Button type="submit" size={'xl'}>Upload pictures</Button>
+                </Stack>
+              </form>
+            </Box>
+          </Stack>
 
           {/* Pictures order & delete */}
           {hotel.pictures && hotel.pictures.length > 0 && (
@@ -336,7 +417,7 @@ export default function Page({ hotel }) {
                         </Card.Root>
                       ))}
                     </Stack>
-                    <Button type="submit">Update pictures order</Button>
+                    <Button type="submit" size={'xl'}>Update pictures order</Button>
                   </Stack>
                 </form>
               </Box>
