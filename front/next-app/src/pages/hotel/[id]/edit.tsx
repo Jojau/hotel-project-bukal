@@ -1,6 +1,7 @@
 import { useState } from "react";
-import styles from '../../../styles/Form.module.css'
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
+import { Alert, Badge, Box, Breadcrumb, Button, Center, Container, Field, FileUpload, Heading, Input, InputGroup, List, NumberInput, Stack, Text, Textarea } from '@chakra-ui/react';
+import { LuFileImage } from 'react-icons/lu';
 
 export default function Page({ hotel }) {
   const router = useRouter()
@@ -138,72 +139,189 @@ export default function Page({ hotel }) {
   }
 
   return (
-    <div>
-      <h1>Edit {hotel.name}</h1>
-      <p>All fields are required unless stated otherwise</p>
+    <Center>
+      <Stack gap={'48px'} margin={'48px'} width={'8xl'}>
+        {/* Hotel name & breadcrumb */}
+        <Container gapY={'12px'}>
+          <Heading size={'4xl'} textAlign={'center'}>Edit "{hotel.name}"</Heading>
 
-      {/* Validation errors */}
-      {errors && errors.length > 0 && (
-        <div>
-          {errors.map((message, index) => (
-            <p key={index} style={{ color: 'red', margin: '6px 0' }}>{message}</p>
-          ))}
-        </div>
-      )}
+          <Center>
+            <Breadcrumb.Root>
+              <Breadcrumb.List>
+                <Breadcrumb.Item>
+                  <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Separator />
+                <Breadcrumb.Item>
+                  <Breadcrumb.Link href={'/hotel/' + hotel.id}>{hotel.name}</Breadcrumb.Link>
+                </Breadcrumb.Item>
+                <Breadcrumb.Separator />
+                <Breadcrumb.Item>
+                  <Breadcrumb.CurrentLink>Edit</Breadcrumb.CurrentLink>
+                </Breadcrumb.Item>
+              </Breadcrumb.List>
+            </Breadcrumb.Root>
+          </Center>
+        </Container>
 
-      <form onSubmit={handleHotelFormSubmit} className={styles.form}>
-        <label htmlFor="name">Hotel name</label>
-        <input type="text" name="name" defaultValue={hotel.name} required />
+        {/* Content & Form */}
+        <Stack gapY={'24px'}>
+          <Text>All fields are required unless stated otherwise</Text>
 
-        <label htmlFor="address">Address (number, street)</label>
-        <input type="text" name="address" defaultValue={hotel.address} required />
+          {/* Validation errors */}
+          {errors && errors.length > 0 && (
+            <Alert.Root status="error">
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title fontWeight={'bold'}>Hotel update {errors.length > 1 ? 'errors' : 'error'}</Alert.Title>
+                <Alert.Description>
+                  <List.Root>
+                    {errors.map((message, index) => (
+                      <List.Item key={index}>{message}</List.Item>
+                    ))}
+                  </List.Root>
+                </Alert.Description>
+              </Alert.Content>
+            </Alert.Root>
+          )}
 
-        <label htmlFor="address2">Complementary address (optional)</label>
-        <input type="text" name="address2" defaultValue={hotel.address2} />
+          {/* Hotel Fields */}
+          <Box borderWidth={'1px'} padding={'24px'}>
+            <form onSubmit={handleHotelFormSubmit}>
+              <Stack gapY={'24px'}>
+                <Field.Root required>
+                  <Field.Label>
+                    Hotel name
+                  </Field.Label>
+                  <Input required name='name' type='text' defaultValue={hotel.name} />
+                  <Field.HelperText>May be up to 255 characters maximum</Field.HelperText>
+                </Field.Root>
 
-        <label htmlFor="zipcode">Zipcode</label>
-        <input type="text" name="zipcode" defaultValue={hotel.zipcode} required />
+                <Field.Root required>
+                  <Field.Label>
+                    Address
+                  </Field.Label>
+                  <Input required name='address' type='text' defaultValue={hotel.address} />
+                  <Field.HelperText>Number and street name</Field.HelperText>
+                </Field.Root>
 
-        <label htmlFor="city">City</label>
-        <input type="text" name="city" defaultValue={hotel.city} required />
+                <Field.Root>
+                  <Field.Label>
+                    Complementary address
+                    <Field.RequiredIndicator
+                      fallback={
+                        <Badge size="sm" variant="surface">
+                          Optional
+                        </Badge>
+                      } />
+                  </Field.Label>
+                  <Input name='address2' type='text' defaultValue={hotel.address2} />
+                </Field.Root>
 
-        <label htmlFor="country">Country</label>
-        <input type="text" name="country" defaultValue={hotel.country} required />
+                <Field.Root required>
+                  <Field.Label>
+                    Zipcode
+                  </Field.Label>
+                  <Input required name='zipcode' type='text' defaultValue={hotel.zipcode} />
+                  <Field.HelperText>May be up to 20 characters maximum, may contain numbers, letters and spaces</Field.HelperText>
+                </Field.Root>
 
-        <label htmlFor="latitude">Latitude</label>
-        <input type="number" name="latitude" defaultValue={hotel.latitude} step="0.00000000000001" required />
+                <Field.Root required>
+                  <Field.Label>
+                    City
+                  </Field.Label>
+                  <Input required name='city' type='text' defaultValue={hotel.city} />
+                </Field.Root>
 
-        <label htmlFor="longitude">Longitude</label>
-        <input type="number" name="longitude" defaultValue={hotel.longitude} step="0.00000000000001" required />
+                <Field.Root required>
+                  <Field.Label>
+                    Country
+                  </Field.Label>
+                  <Input required name='country' type='text' defaultValue={hotel.country} />
+                </Field.Root>
 
-        <label htmlFor="description">Description</label>
-        <textarea name="description" id="description" defaultValue={hotel.description} required></textarea>
+                <Field.Root required>
+                  <Field.Label>
+                    Latitude
+                  </Field.Label>
+                  <NumberInput.Root required name='latitude' step={0.00000000000001} min={-90} max={90}>
+                    <NumberInput.Control />
+                    <NumberInput.Input defaultValue={hotel.latitude} />
+                  </NumberInput.Root>
+                  <Field.HelperText>Must be between -90 and 90, may be decimal (if so, use the dot and not the comma). Example : 40.70967754745341</Field.HelperText>
+                </Field.Root>
 
-        <label htmlFor="max_capacity">Maximum capacity</label>
-        <input type="number" name="max_capacity" defaultValue={hotel.max_capacity} required />
+                <Field.Root required>
+                  <Field.Label>
+                    Longitude
+                  </Field.Label>
+                  <NumberInput.Root required name='longitude' step={0.00000000000001} min={-180} max={180}>
+                    <NumberInput.Control />
+                    <NumberInput.Input defaultValue={hotel.longitude} />
+                  </NumberInput.Root>
+                  <Field.HelperText>Must be between -180 and 180, may be decimal (if so, use the dot and not the comma). Example : -74.01277611534421</Field.HelperText>
+                </Field.Root>
 
-        <label htmlFor="price_per_night">Price per night (in USD)</label>
-        <input type="number" name="price_per_night" defaultValue={hotel.price_per_night} required />
+                <Field.Root required>
+                  <Field.Label>
+                    Description
+                  </Field.Label>
+                  <Textarea required name='description' maxLength={5000} defaultValue={hotel.description} />
+                  <Field.HelperText>May be up to 5000 characters maximum</Field.HelperText>
+                </Field.Root>
 
-        <button type="submit">Edit hotel</button>
-      </form>
+                <Field.Root required>
+                  <Field.Label>
+                    Maximum capacity
+                  </Field.Label>
+                  <NumberInput.Root required name='max_capacity' defaultValue={hotel.max_capacity} step={1} min={1} max={200}>
+                    <NumberInput.Control />
+                    <NumberInput.Input />
+                  </NumberInput.Root>
+                  <Field.HelperText>Must be an integer between 1 and 200</Field.HelperText>
+                </Field.Root>
 
-      {hotel.pictures && hotel.pictures.length > 0 && (
-        <form onSubmit={handlePicturesFormSubmit} className={styles.form}>
-          {hotel.pictures.sort(function (a, b) {
-            return a.index - b.index;
-          }).map((picture, index) => (
-            <div>
-              <img key={index} style={{ maxHeight: '200px', maxWidth: '200px' }} src={picture.file_path}></img>
-              <label htmlFor={`picture_index_${picture.id}`}>Position in slideshow</label>
-              <input type="number" name={`picture_index_${picture.id}`} defaultValue={picture.index} required min={0} />
-              <button onClick={deletePicture} data-picture-id={picture.id}>Delete picture</button>
-            </div>
-          ))}
-          <button type="submit">Update pictures order</button>
-        </form>
-      )}
-    </div>
+                <Field.Root required>
+                  <Field.Label>
+                    Price per night
+                  </Field.Label>
+                  <InputGroup startAddon="$" endAddon="USD per night">
+                    <NumberInput.Root required name='price_per_night' min={0} step={0.01}>
+                      <NumberInput.Control />
+                      <NumberInput.Input defaultValue={hotel.price_per_night} />
+                    </NumberInput.Root>
+                  </InputGroup>
+                  <Field.HelperText>In USD, must be positive, may be decimal (if so, use the dot and not the comma)</Field.HelperText>
+                </Field.Root>
+
+                <Button type="submit" size={'xl'}>Update hotel</Button>
+              </Stack>
+            </form>
+          </Box>
+
+          {/* TODO Add new pictures */}
+
+          {/* TODO Pictures */}
+          {hotel.pictures && hotel.pictures.length > 0 && (
+            <Box>
+              <form onSubmit={handlePicturesFormSubmit}>
+                {hotel.pictures.sort(function (a, b) {
+                return a.index - b.index;
+              }).map((picture, index) => (
+                <div>
+                  <img key={index} style={{ maxHeight: '200px', maxWidth: '200px' }} src={picture.file_path}></img>
+                  <label htmlFor={`picture_index_${picture.id}`}>Position in slideshow</label>
+                  <input type="number" name={`picture_index_${picture.id}`} defaultValue={picture.index} required min={0} />
+                  <button onClick={deletePicture} data-picture-id={picture.id}>Delete picture</button>
+                </div>
+              ))}
+                <button type="submit">Update pictures order</button>
+              </form>
+            </Box>
+          )}
+        </Stack>
+      </Stack>
+    </Center>
   )
 }
 
