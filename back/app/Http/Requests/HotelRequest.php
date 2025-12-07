@@ -32,7 +32,7 @@ class HotelRequest extends FormRequest
             'country' => 'required|string',
             'longitude' => 'required|numeric|min:-180|max:180',
             'latitude' => 'required|numeric|min:-90|max:90',
-            'description' => 'nullable|string|max:5000',
+            'description' => 'required|string|max:5000',
             'max_capacity' => 'required|integer|min:1|max:200',
             'price_per_night' => 'required|numeric|min:0',
         ];
