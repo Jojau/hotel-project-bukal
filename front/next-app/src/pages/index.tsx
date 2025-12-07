@@ -1,9 +1,9 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Hotel } from "../types/types"
-import { Button, Card, Flex, Heading, Text, Image, Center, Stack, Container } from "@chakra-ui/react";
+import { Button, Card, Flex, Heading, Text, Image, Center, Stack, Container, Pagination, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 
 export default function Home() {
 
@@ -49,10 +49,19 @@ export default function Home() {
     }
   });
 
-  useEffect(() => {
-    const data = fetch("http://localhost/api/hotel?page=3")
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const fetchHotels = (page: number) => {
+    fetch(`http://localhost/api/hotel?page=${page}`)
       .then((response) => response.json())
-      .then(setHotels);
+      .then((data) => {
+        setHotels(data);
+        setCurrentPage(page);
+      });
+  };
+
+  useEffect(() => {
+    fetchHotels(1);
   }, []);
 
   return (
@@ -63,17 +72,18 @@ export default function Home() {
       </Head>
 
       <Center>
-          <Stack gap={'48px'} margin={'48px'} width={'8xl'}>
-            <Heading size={'6xl'} textAlign={'center'}>Hotels</Heading>
+        <Stack gap={'48px'} margin={'48px'} width={'8xl'}>
+          <Heading size={'6xl'} textAlign={'center'}>Hotels</Heading>
 
-            <Center>
-              <Link href={'/hotel/new'}>
-                <Button size={'2xl'} width={'fit-content'}>Create new hotel</Button>
-              </Link>
-            </Center>
+          <Center>
+            <Link href={'/hotel/new'}>
+              <Button size={'2xl'} width={'fit-content'}>Create new hotel</Button>
+            </Link>
+          </Center>
 
+          <Stack gapY={'24px'}>
             <Flex gap={'24px'} justifyContent={'center'} flexWrap={'wrap'}>
-              {hotels.data.map((hotel) => 
+              {hotels.data.map((hotel) =>
                 <Card.Root maxW="sm" overflow="hidden" key={hotel.id}>
                   {hotel.pictures && hotel.pictures.length > 0 && (
                     <Image
@@ -98,8 +108,27 @@ export default function Home() {
                 </Card.Root>
               )}
             </Flex>
+
+            <Center>
+              <Pagination.Root count={hotels.meta.total} pageSize={hotels.meta.per_page} defaultPage={1} onPageChange={(e) => fetchHotels(e.page)}>
+                <ButtonGroup gap="4" size="sm" variant="ghost">
+                  <Pagination.PrevTrigger asChild>
+                    <IconButton onClick={() => currentPage > 1 && fetchHotels(currentPage - 1)}>
+                      <HiChevronLeft />
+                    </IconButton>
+                  </Pagination.PrevTrigger>
+                  <Pagination.PageText />
+                  <Pagination.NextTrigger asChild>
+                    <IconButton onClick={() => currentPage < hotels.meta.last_page && fetchHotels(currentPage + 1)}>
+                      <HiChevronRight />
+                    </IconButton>
+                  </Pagination.NextTrigger>
+                </ButtonGroup>
+              </Pagination.Root>
+            </Center>
           </Stack>
-        </Center>
+        </Stack>
+      </Center>
     </Container>
   );
 }
