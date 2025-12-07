@@ -25,7 +25,7 @@ export default function Page({ hotel }) {
 
   return (
     <Center>
-      <Stack gap={'48px'} margin={'48px'} maxWidth={'8xl'}>
+      <Stack gap={'48px'} margin={'48px'} width={'8xl'}>
         {/* Hotel name & breadcrumb */}
         <Container gapY={'12px'}>
           <Heading size={'4xl'} textAlign={'center'}>{hotel.name}</Heading>
