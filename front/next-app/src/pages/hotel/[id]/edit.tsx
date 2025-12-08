@@ -430,7 +430,7 @@ export default function Page({ hotel }) {
 }
 
 export async function getStaticProps({ params }) {
-  const hotel = await fetch(`http://localhost/api/hotel/${params.id}`).then(response => response.json());
+  const hotel = await fetch(`http://web:80/api/hotel/${params.id}`).then(response => response.json());
 
   return {
     props: {
@@ -440,7 +440,7 @@ export async function getStaticProps({ params }) {
 }
 
 export async function getStaticPaths() {
-  const data = await fetch("http://localhost/api/hotel-ids").then((response) => response.json())
+  const data = await fetch("http://web:80/api/hotel-ids").then((response) => response.json())
 
   return {
     paths: data.map(id => ({
