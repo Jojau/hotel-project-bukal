@@ -131,8 +131,8 @@ export default function Page({ hotel }) {
         });
       }
     } else {
-      // If all pictures have been successfully uploaded, redirect to details page
-      router.push(`/hotel/${hotel.id}`);
+      // If all pictures have been successfully uploaded, reload the page to display them for re-order
+      router.reload();
     }
   }
 
